@@ -22,8 +22,10 @@ const PasswordSchema = Yup.object().shape({
     .required('Length is required'),
 });
 export default function App() {
-  const backgroundColor = useColorScheme() === 'dark' ? '#121212' : '#ffffff';
-  const textColor = useColorScheme() === 'dark' ? '#ffffff' : '#000000';
+  const colorScheme = useColorScheme();
+  const backgroundColor = colorScheme === 'dark' ? '#47535E' : '#EAF0F1';
+  const textColor = colorScheme === 'dark' ? '#ffffff' : '#000000';
+  const borderColor = colorScheme === 'dark' ? '#CCCCCC' : '#fffff';
 
   const [password, setPassword] = useState('');
   const [isPassGenerated, setIsPassGenerated] = useState(false);
@@ -114,11 +116,18 @@ export default function App() {
                     )}
                   </View>
                   <TextInput
-                    style={[styles.inputStyle, {color: textColor}]}
+                    style={[
+                      styles.inputStyle,
+                      {borderColor},
+                      {color: textColor},
+                    ]}
                     value={values.passwordLength}
                     onChangeText={handleChange('passwordLength')}
                     placeholder="Ex. 8"
                     keyboardType="numeric"
+                    placeholderTextColor={
+                      colorScheme === 'dark' ? 'white' : 'black'
+                    }
                   />
                 </View>
                 <View style={styles.inputWrapper}>
@@ -187,7 +196,7 @@ export default function App() {
           </Formik>
         </View>
         {isPassGenerated && (
-          <View style={[styles.card, styles.cardElevated]}>
+          <View style={[styles.card, styles.cardElevated, {borderColor}]}>
             <Text style={[styles.subTitle, {color: textColor}]}>Result:</Text>
             <Text style={[styles.description, {color: textColor}]}>
               Long Press to copy
@@ -240,10 +249,10 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     padding: 8,
-    width: '30%',
+    width: '40%',
     borderWidth: 1,
     borderRadius: 4,
-    borderColor: '#16213e',
+    // borderColor: '#16213e',
   },
   errorText: {
     fontSize: 12,
@@ -283,10 +292,11 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 6,
     marginHorizontal: 12,
+    borderColor: 'white',
+    borderWidth: 2,
   },
   cardElevated: {
     // backgroundColor: '#ffffff',
-    borderBlockColor: 'white',
     elevation: 1,
     shadowOffset: {
       width: 1,
