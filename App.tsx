@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
@@ -21,10 +22,13 @@ const PasswordSchema = Yup.object().shape({
     .required('Length is required'),
 });
 export default function App() {
+  const backgroundColor = useColorScheme() === 'dark' ? '#121212' : '#ffffff';
+  const textColor = useColorScheme() === 'dark' ? '#ffffff' : '#000000';
+
   const [password, setPassword] = useState('');
   const [isPassGenerated, setIsPassGenerated] = useState(false);
 
-  const [lowerCase, setLowerCase] = useState(true);
+  const [lowerCase, setLowerCase] = useState(false);
   const [upperCase, setupperCase] = useState(false);
   const [numbers, setNumbers] = useState(false);
   const [symbols, setSymbols] = useState(false);
@@ -51,7 +55,6 @@ export default function App() {
     }
 
     const passwordResult = createPassword(characterList, passwordLength);
-
     setPassword(passwordResult);
     setIsPassGenerated(true);
   };
@@ -59,7 +62,7 @@ export default function App() {
   const createPassword = (characters: string, passwordLength: number) => {
     let result = '';
     for (let i = 0; i < passwordLength; i++) {
-      const characterIndex = Math.round(Math.random() * characters.length);
+      const characterIndex = Math.floor(Math.random() * characters.length);
       result += characters.charAt(characterIndex);
     }
     return result;
@@ -68,19 +71,19 @@ export default function App() {
   const resetPasswordState = () => {
     setPassword('');
     setIsPassGenerated(false);
-    setLowerCase(true);
+    setLowerCase(false);
     setupperCase(false);
     setNumbers(false);
     setSymbols(false);
   };
 
   return (
-    <ScrollView
-      keyboardShouldPersistTaps="handled"
-      style={{backgroundColor: '#dcdde1'}}>
-      <SafeAreaView style={styles.appContainer}>
+    <ScrollView keyboardShouldPersistTaps="handled" style={[{backgroundColor}]}>
+      <SafeAreaView style={[styles.appContainer]}>
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Password Generator</Text>
+          <Text style={[styles.title, {color: textColor}]}>
+            Password Generator
+          </Text>
           <Formik
             initialValues={{passwordLength: ''}}
             validationSchema={PasswordSchema}
@@ -101,7 +104,9 @@ export default function App() {
               <>
                 <View style={styles.inputWrapper}>
                   <View style={styles.inputColumn}>
-                    <Text style={styles.heading}>Password Length</Text>
+                    <Text style={[styles.heading, {color: textColor}]}>
+                      Password Length
+                    </Text>
                     {touched.passwordLength && errors.passwordLength && (
                       <Text style={styles.errorText}>
                         {errors.passwordLength}
@@ -109,7 +114,7 @@ export default function App() {
                     )}
                   </View>
                   <TextInput
-                    style={styles.inputStyle}
+                    style={[styles.inputStyle, {color: textColor}]}
                     value={values.passwordLength}
                     onChangeText={handleChange('passwordLength')}
                     placeholder="Ex. 8"
@@ -117,7 +122,9 @@ export default function App() {
                   />
                 </View>
                 <View style={styles.inputWrapper}>
-                  <Text style={styles.heading}>Include lowercase</Text>
+                  <Text style={[styles.heading, {color: textColor}]}>
+                    Include lowercase
+                  </Text>
                   <BouncyCheckbox
                     isChecked={lowerCase}
                     onPress={() => setLowerCase(!lowerCase)}
@@ -125,7 +132,9 @@ export default function App() {
                   />
                 </View>
                 <View style={styles.inputWrapper}>
-                  <Text style={styles.heading}>Include Uppercase letters</Text>
+                  <Text style={[styles.heading, {color: textColor}]}>
+                    Include Uppercase letters
+                  </Text>
                   <BouncyCheckbox
                     isChecked={upperCase}
                     onPress={() => setupperCase(!upperCase)}
@@ -133,7 +142,9 @@ export default function App() {
                   />
                 </View>
                 <View style={styles.inputWrapper}>
-                  <Text style={styles.heading}>Include Numbers</Text>
+                  <Text style={[styles.heading, {color: textColor}]}>
+                    Include Numbers
+                  </Text>
                   <BouncyCheckbox
                     isChecked={numbers}
                     onPress={() => setNumbers(!numbers)}
@@ -141,7 +152,9 @@ export default function App() {
                   />
                 </View>
                 <View style={styles.inputWrapper}>
-                  <Text style={styles.heading}>Include Symbols</Text>
+                  <Text style={[styles.heading, {color: textColor}]}>
+                    Include Symbols
+                  </Text>
                   <BouncyCheckbox
                     isChecked={symbols}
                     onPress={() => setSymbols(!symbols)}
@@ -153,7 +166,9 @@ export default function App() {
                     disabled={!isValid}
                     style={styles.primaryBtn}
                     onPress={() => handleSubmit()}>
-                    <Text style={styles.primaryBtnTxt}>Generate Password</Text>
+                    <Text style={[styles.primaryBtnTxt, {color: textColor}]}>
+                      Generate Password
+                    </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -162,7 +177,9 @@ export default function App() {
                       handleReset();
                       resetPasswordState();
                     }}>
-                    <Text style={styles.secondaryBtnTxt}>Reset</Text>
+                    <Text style={[styles.secondaryBtnTxt, {color: textColor}]}>
+                      Reset
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -171,9 +188,13 @@ export default function App() {
         </View>
         {isPassGenerated && (
           <View style={[styles.card, styles.cardElevated]}>
-            <Text style={styles.subTitle}>Result:</Text>
-            <Text style={styles.description}>Long Press to copy</Text>
-            <Text selectable={true} style={styles.generatedPassword}>
+            <Text style={[styles.subTitle, {color: textColor}]}>Result:</Text>
+            <Text style={[styles.description, {color: textColor}]}>
+              Long Press to copy
+            </Text>
+            <Text
+              selectable={true}
+              style={[styles.generatedPassword, {color: textColor}]}>
               {password}
             </Text>
           </View>
@@ -208,11 +229,9 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 17,
     fontWeight: 'bold',
-    color: '#26ae60',
   },
   inputWrapper: {
     marginBottom: 15,
-    // alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
@@ -254,7 +273,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#CAD5E2',
   },
   secondaryBtnTxt: {
+    flex: 1,
     textAlign: 'center',
+    fontSize: 15,
+    fontWeight: 'bold',
+    textAlignVertical: 'center',
   },
   card: {
     padding: 12,
@@ -262,7 +285,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
   },
   cardElevated: {
-    backgroundColor: '#ffffff',
+    // backgroundColor: '#ffffff',
+    borderBlockColor: 'white',
     elevation: 1,
     shadowOffset: {
       width: 1,
